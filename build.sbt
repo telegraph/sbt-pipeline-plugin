@@ -16,4 +16,10 @@ lazy val root = (project in file(".")).
 
 libraryDependencies ++= ProjectDependencies ++ UnitTestDependencies
 
-publishTo := Some("mvn-artifacts" at "s3://mvn-artifacts/release")
+publishTo := {
+  if( isSnapshot.value ){
+    Some("mvn-artifacts" at "s3://mvn-artifacts/snapshot")
+  }else {
+    Some("mvn-artifacts" at "s3://mvn-artifacts/release")
+  }
+}
