@@ -1,8 +1,9 @@
 
-def buildNumber = this.binding.variables.get('BUILD_NUMBER')
-def sbtFolder   = "${tool name: 'sbt-0.13.13', type: 'org.jvnet.hudson.plugins.SbtPluginBuilder$SbtInstallation'}/bin"
-
 node {
+
+    def buildNumber = this.binding.variables.get('BUILD_NUMBER')
+    def sbtFolder   = "${tool name: 'sbt-0.13.13', type: 'org.jvnet.hudson.plugins.SbtPluginBuilder$SbtInstallation'}/bin"
+
     stage("Checkout"){
         echo "git checkout"
         checkout changelog: false, poll: false, scm: [
