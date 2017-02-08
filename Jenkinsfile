@@ -23,7 +23,7 @@ node {
             submoduleCfg: [], 
             userRemoteConfigs: [[
                 credentialsId: 'fe000f7c-4de6-45c7-9097-d1fba24f3cb5', 
-                url: 'git@github.com:telegraph/${projectName}.git'
+                url: "git@github.com:telegraph/${projectName}.git"
             ]]
         ]
     }
