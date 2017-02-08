@@ -1,8 +1,11 @@
 
 node {
 
-    def buildNumber = this.binding.variables.get('BUILD_NUMBER')
-    def sbtFolder   = "${tool name: 'sbt-0.13.13', type: 'org.jvnet.hudson.plugins.SbtPluginBuilder$SbtInstallation'}/bin"
+    def sbtFolder        = "${tool name: 'sbt-0.13.13', type: 'org.jvnet.hudson.plugins.SbtPluginBuilder$SbtInstallation'}/bin"
+    def projectName      = "${env.PROJECT_NAME}"
+    def github_token     = "3cfa434608e1a81712ece082bfe4a97101be0859"
+    def pipeline_version = "${env.BUILD_NUMBER}"
+    def github_commit    = ""
 
     stage("Checkout"){
         echo "git checkout"
@@ -20,7 +23,7 @@ node {
             submoduleCfg: [], 
             userRemoteConfigs: [[
                 credentialsId: 'fe000f7c-4de6-45c7-9097-d1fba24f3cb5', 
-                url: 'git@github.com:telegraph/simple-pipeline-test.git'
+                url: 'git@github.com:telegraph/${projectName}.git'
             ]]
         ]
     }
@@ -41,7 +44,7 @@ node {
     stage("Release Notes"){
         // Possible error if there is a commit different from the trigger commit
         github_commit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
-        pipeline_version = "${env.BUILD_NUMBER}"
+
         //Realease on Git
         println("\n[TRACE] **** Releasing to github ${github_token}, ${pipeline_version}, ${github_commit} ****")
         sh """#!/bin/bash
