@@ -1,6 +1,6 @@
 *.class
 *.log
-
+.idea
 # sbt specific
 .cache
 .history
@@ -10,6 +10,8 @@ target/
 lib_managed/
 src_managed/
 project/boot/
+project/target
+project/project
 project/plugins/project/
 
 # Scala-IDE specific
