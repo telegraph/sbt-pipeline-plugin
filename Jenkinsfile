@@ -26,7 +26,6 @@ node {
     }
 
     stage("Build & Test"){
-        echo "sbt build"
         sh """
             ${sbtFolder}/sbt clean test package
         """
@@ -35,12 +34,23 @@ node {
     stage("Publish"){
         echo "Run Publish"
         sh """
-
+            sbt publish
         """
     }
 
     stage("Release Notes"){
-        echo "Tag Release Candidate"
-        echo "Set Release Notes"
+        // Possible error if there is a commit different from the trigger commit
+        github_commit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+        pipeline_version = "${env.BUILD_NUMBER}"
+        //Realease on Git
+        println("\n[TRACE] **** Releasing to github ${github_token}, ${pipeline_version}, ${github_commit} ****")
+        sh """#!/bin/bash
+            GITHUB_COMMIT_MSG=\$(curl -H "Content-Type: application/json" -H "Authorization: token ${github_token}" https://api.github.com/repos/telegraph/${projectName}/commits/\"${github_commit}\" | /usr/local/bin/jq \'.commit.message\')
+            echo "GITHUB_COMMIT_MSG: \${GITHUB_COMMIT_MSG}"
+            echo "GITHUB_COMMIT_DONE: DONE"
+            C_DATA="{\\\"tag_name\\\": \\\"${pipeline_version}\\\",\\\"target_commitish\\\": \\\"master\\\",\\\"name\\\": \\\"${pipeline_version}\\\",\\\"body\\\": \${GITHUB_COMMIT_MSG},\\\"draft\\\": false,\\\"prerelease\\\": false}"
+            echo "C_DATA: \${C_DATA}"
+            curl -H "Content-Type: application/json" -H "Authorization: token ${github_token}" -X POST -d "\${C_DATA}" https://api.github.com/repos/telegraph/${projectName}/releases
+        """
     }
 }
