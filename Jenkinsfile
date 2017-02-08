@@ -34,7 +34,7 @@ node {
     stage("Publish"){
         echo "Run Publish"
         sh """
-            sbt publish
+            ${sbtFolder}/sbt publish
         """
     }
 
