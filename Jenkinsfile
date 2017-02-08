@@ -30,7 +30,7 @@ node {
 
     stage("Build & Test"){
         sh """
-            ${sbtFolder}/sbt clean test package
+            ${sbtFolder}/sbt clean test package assembly
         """
     }
 
