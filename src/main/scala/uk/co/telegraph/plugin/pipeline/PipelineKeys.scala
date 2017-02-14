@@ -1,6 +1,5 @@
 package uk.co.telegraph.plugin.pipeline
 
-import com.amazonaws.services.cloudformation.AmazonCloudFormationClient
 import sbt._
 
 trait PipelineKeys {
@@ -25,7 +24,6 @@ trait PipelineKeys {
   val stackDelete   = TaskKey[Unit]("stackDelete",   "Task used to delete a stack")
   val stackUpdate   = TaskKey[Unit]("stackUpdate",   "Task used to update a stack")
   val stackPublish  = TaskKey[URI ]("stackPublish",  "Task used to publish the stack templates to s3 bucket")
-  val stackClient   = taskKey[AmazonCloudFormationClient]("AWS CloudFormation Client")
 }
 
 object PipelineKeys extends PipelineKeys
