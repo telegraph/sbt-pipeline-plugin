@@ -1,7 +1,8 @@
-package uk.co.telegraph.stack
+package uk.co.telegraph.cloud.aws
 
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
-import com.amazonaws.auth.{EnvironmentVariableCredentialsProvider, AWSStaticCredentialsProvider, BasicAWSCredentials, AWSCredentialsProvider}
+import com.amazonaws.auth.{AWSCredentialsProvider, AWSStaticCredentialsProvider, BasicAWSCredentials, EnvironmentVariableCredentialsProvider}
+import uk.co.telegraph.cloud.{AuthCredentials, AuthEnvVars, AuthProfile, AuthToken}
 
 /**
  * Created: rodriguesa 
@@ -9,13 +10,6 @@ import com.amazonaws.auth.{EnvironmentVariableCredentialsProvider, AWSStaticCred
  * Project: sbt-pipeline-plugin
  */
 package object auth {
-
-  //Typeclass Pattern
-  sealed trait AuthCredentials
-
-  case class AuthToken  (accessToken:String, secretToken:String) extends AuthCredentials
-  case class AuthProfile(profileName:Option[String]=None) extends AuthCredentials
-  case class AuthEnvVars() extends AuthCredentials
 
   implicit object AuthTokenProvider extends AuthProvider[AuthToken]{
     override def authenticate(authToken: AuthToken): AWSCredentialsProvider = {
@@ -39,7 +33,7 @@ package object auth {
   private def doAuthenticate[A <: AuthCredentials:AuthProvider](thing:A) = AuthProvider[A].authenticate(thing)
 
   implicit class AuthenticationOper[A <: AuthCredentials]( authentication: A){
-    def toProvider = {
+    def toProvider: AWSCredentialsProvider = {
       //TODO: There must be a way to remove this thing!
       authentication match {
         case auth:AuthProfile => doAuthenticate( auth )

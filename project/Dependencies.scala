@@ -13,7 +13,8 @@ object Dependencies {
     "com.amazonaws" % "aws-java-sdk-core"           % awsSdkVersion,
     "com.amazonaws" % "jmespath-java"               % awsSdkVersion,
 
-    "org.json4s"    %% "json4s-native" % json4sVersion
+    "org.json4s"    %% "json4s-native" % json4sVersion,
+    "org.typelevel" %% "cats-free"     % "0.9.0"
   )
 
   lazy val UnitTestDependencies = Seq(

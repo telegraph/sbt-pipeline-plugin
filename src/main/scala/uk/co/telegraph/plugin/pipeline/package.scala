@@ -3,11 +3,9 @@ package uk.co.telegraph.plugin
 import sbt._
 import org.json4s._
 import org.json4s.native.JsonMethods._
-import uk.co.telegraph.stack.CloudFormationClient
-import uk.co.telegraph.stack.auth._
+import uk.co.telegraph.cloud.AuthCredentials
 
 import scala.language.implicitConversions
-import scala.util.{Failure, Success}
 
 /**
  * Created: rodriguesa 

@@ -1,6 +1,7 @@
-package uk.co.telegraph.stack.auth
+package uk.co.telegraph.cloud.aws.auth
 
 import com.amazonaws.auth.AWSCredentialsProvider
+import uk.co.telegraph.cloud.AuthCredentials
 
 /**
  * Created: rodriguesa 

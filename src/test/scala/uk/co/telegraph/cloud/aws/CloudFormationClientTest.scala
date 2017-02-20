@@ -1,18 +1,17 @@
-package uk.co.telegraph.stack
+package uk.co.telegraph.cloud.aws
 
 import com.amazonaws.services.cloudformation.AmazonCloudFormation
 import com.amazonaws.services.cloudformation.model._
+import org.mockito.Mockito._
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.{eq => mkEq}
-import org.mockito.Mockito._
-import org.scalatest.{BeforeAndAfter, Matchers, FunSpec}
+import org.scalatest.{BeforeAndAfter, FunSpec, Matchers}
 import org.scalatest.junit.JUnitRunner
-import uk.co.telegraph.plugin.pipeline._
-import uk.co.telegraph.stack.auth.{AuthProfile, AuthProvider}
-import uk.co.telegraph.stack.auth.AuthProvider._
+import sbt._
+import uk.co.telegraph.cloud.{AuthProfile, StackConfig}
+import uk.co.telegraph.plugin.pipeline.StackAuth
 
 import scala.util.{Failure, Success, Try}
-import sbt._
 
 /**
  * Created: rodriguesa 
@@ -34,7 +33,7 @@ class CloudFormationClientTest extends FunSpec with Matchers with BeforeAndAfter
       when( CfClientMock.describeStacks(mkEq(SampleDescribeRequest)) ).thenReturn( SampleDescribeResult )
 
       val result = CloudFormationClientObj.describe(SampleStackName)
-      result shouldBe Success(SampleStack)
+      result shouldBe Some(SampleStack)
     }
 
     it("I should be able to delete a stack"){
@@ -49,54 +48,44 @@ class CloudFormationClientTest extends FunSpec with Matchers with BeforeAndAfter
     }
 
     it("I should be able to create a stack"){
-      when(CfClientMock.describeStacks(mkEq(SampleDescribeRequest)) ).thenReturn( new DescribeStacksResult() )
       when(CfClientMock.createStack(mkEq(SampleCreateRequest)))
         .thenReturn( SampleCreateResult )
 
-      val result = CloudFormationClientObj.createOrUpdate(
+      val result = CloudFormationClientObj.create(
         name         = SampleStackName,
-        capabilities = SampleStackCapabilities,
-        templateUri  = SampleTemplateUri,
-        tags         = SampleStackTags,
-        parameters   = SampleStackParams
+        config       = StackConfig(
+          capabilities = SampleStackCapabilities,
+          templateUri  = SampleTemplateUri,
+          tags         = SampleStackTags,
+          parameters   = SampleStackParams
+        )
       )
-      result shouldBe Success(SampleStackId)
+      result shouldBe ()
     }
 
     it("I should be able to update a stack"){
-      when(CfClientMock.describeStacks(mkEq(SampleDescribeRequest)) ).thenReturn( SampleDescribeResult )
       when(CfClientMock.updateStack(mkEq(SampleUpdateRequest)))
         .thenReturn( SampleUpdateResult )
 
-      val result = CloudFormationClientObj.createOrUpdate(
+      val result = CloudFormationClientObj.update(
         name         = SampleStackName,
-        capabilities = SampleStackCapabilities,
-        templateUri  = SampleTemplateUri,
-        tags         = SampleStackTags,
-        parameters   = SampleStackParams
+        config       = StackConfig(
+          capabilities = SampleStackCapabilities,
+          templateUri  = SampleTemplateUri,
+          tags         = SampleStackTags,
+          parameters   = SampleStackParams
+        )
       )
-      result shouldBe Success(SampleStackId)
+      result shouldBe ()
     }
 
-    it("I should be able to get status from a stack"){
-      when(CfClientMock.describeStacks(mkEq(SampleDescribeRequest)) ).thenReturn( SampleDescribeResult )
-
-      val result = CloudFormationClientObj.status(SampleStackName)
-      result shouldBe Some(SampleStackStatus)
-    }
-
-    it("I should get no status if the stack does not exist"){
-      when(CfClientMock.describeStacks(mkEq(SampleDescribeRequest)) ).thenReturn( new DescribeStacksResult() )
-
-      val result = CloudFormationClientObj.status(SampleStackName)
-      result shouldBe None
-    }
   }
 }
 
 object CloudFormationClientTest {
 
   val CfClientMock            = mock(classOf[AmazonCloudFormation])
+  val LoggerMock            = mock(classOf[Logger])
 
   val SampleStackId           = "stack-1"
   val SampleStackName         = "sbt-pipeline-plugin"
@@ -137,9 +126,10 @@ object CloudFormationClientTest {
     .withTemplateURL (s"https://s3-eu-west-1.amazonaws.com/$SampleS3Bucket/$SampleS3Key/template.json")
   val SampleUpdateResult      = new UpdateStackResult().withStackId(SampleStackId)
 
-  object CloudFormationClientObj extends CloudFormationClient {
+  object CloudFormationClientObj extends AwsCloudFormation with AwsClientWithAuth {
     val authCredentials: StackAuth = AuthProfile()
     val region:String             = "eu-west-1"
+    val log:Logger                = LoggerMock
     override lazy val cfClient    = CfClientMock
   }
 }

@@ -134,7 +134,3 @@ S3 Bucket, create or update the stack.
 
 #Examples
 Check the available templates to see how we can configure these parameters on SBT.
-
-#Issues
-At the moment all tasks do a fire and forget request and they do not way until the stack operation is completed. This
-issue should be solved in the next commit.

@@ -1,12 +1,13 @@
 package uk.co.telegraph.plugin.pipeline
 
+import sbt._
 import sbt.Keys._
 import sbt.Project.inConfig
-import sbt._
-import uk.co.telegraph.stack.auth.AuthProfile
-import uk.co.telegraph.stack.{CloudFormationClient, S3Client}
+import uk.co.telegraph.cloud.aws.interpreter
 
-import scala.util.{Failure, Success}
+import scala.util.{Failure, Success, Try}
+import uk.co.telegraph.cloud._
+import uk.co.telegraph.cloud.dls._
 
 object PipelinePlugin extends AutoPlugin{
 
@@ -14,7 +15,7 @@ object PipelinePlugin extends AutoPlugin{
 
   import autoImport._
 
-  override def trigger = allRequirements
+  override def trigger: PluginTrigger = allRequirements
 
   lazy val defaultDeploySettings: Seq[Setting[_]] = Seq(
     stackEnv          := "dev",
@@ -64,31 +65,26 @@ object PipelinePlugin extends AutoPlugin{
         .map      ( x => uri(s"${x.toString}/template.json"))
         .getOrElse( s3Uri )
       // Compute the Parameters
-      val parameters       = doReadParameters(parametersPath) ++ parametersCustom
+      val parameters  = doReadParameters(parametersPath) ++ parametersCustom
+      val config      = StackConfig(capabilities, templateUri, tags, parameters)
 
       log.info(s"")
       log.info(s"Setup Stack [Create Or Update]:")
       log.info(s"")
-      log.info(s"\t Environment: $environment")
-      log.info(s"\t Credentials: ${authCredentials.getClass.getSimpleName}")
-      log.info(s"\t      Region: $region")
-      log.info(s"\t        Name: $name")
-      log.info(s"\tCapabilities: $capabilities")
-      log.info(s"\t        Tags: $tags")
-      log.info(s"\t  Parameters: $parameters")
-      log.info(s"\tTemplate Uri: $templateUri")
+      logDetails(environment, authCredentials, region, name, Some(config))
       log.info("")
 
-      val taskResult = CloudFormationClient(authCredentials, region).createOrUpdate(
-        name         = name,
-        capabilities = capabilities,
-        templateUri  = templateUri,
-        tags         = tags,
-        parameters   = parameters
-      )
-      taskResult match {
+
+      Try{
+        val request = createOrUpdate(name, config).flatMap( _ => await(name) )
+        request.foldMap(interpreter(region, authCredentials))
+      } match {
         case Success(_) =>
-        case Failure(ex) => fail(ex.getMessage)
+        case Failure(ex) =>
+          log.error("")
+          log.error(s" ERROR: Fail during 'stackSetup' - ${ex.getMessage}")
+          log.error("")
+          fail( ex )
       }
     },
     stackTest     := (test in IntegrationTest).value,
@@ -105,13 +101,14 @@ object PipelinePlugin extends AutoPlugin{
       log.info(s"")
       log.info(s"Describe Stack:")
       log.info(s"")
-      log.info(s"\t Environment: $environment")
-      log.info(s"\t Credentials: ${authCredentials.getClass.getSimpleName}")
-      log.info(s"\t      Region: $region")
-      log.info(s"\t        Name: $name")
+      logDetails(environment, authCredentials, region, name, None)
       log.info(s"")
 
-      CloudFormationClient(authCredentials, region).describe(name).map( _.getStackId ).toOption
+      Try{
+        describe(name)
+          .foldMap(interpreter(region, authCredentials))
+          .map    (_.getStackName)
+      } get
     },
     stackCreate   := {
       implicit val environment = (stackEnv          in stackCreate).value
@@ -132,31 +129,25 @@ object PipelinePlugin extends AutoPlugin{
         .map      ( x => uri(s"${x.toString}/template.json"))
         .getOrElse( s3Uri )
       // Compute the Parameters
-      val parameters       = doReadParameters(parametersPath) ++ parametersCustom
+      val parameters  = doReadParameters(parametersPath) ++ parametersCustom
+      val config      = StackConfig(capabilities, templateUri, tags, parameters)
 
       log.info(s"")
       log.info(s"Creating Stack:")
       log.info(s"")
-      log.info(s"\t Environment: $environment")
-      log.info(s"\t Credentials: ${authCredentials.getClass.getSimpleName}")
-      log.info(s"\t      Region: $region")
-      log.info(s"\t        Name: $name")
-      log.info(s"\tCapabilities: $capabilities")
-      log.info(s"\t        Tags: $tags")
-      log.info(s"\t  Parameters: $parameters")
-      log.info(s"\tTemplate Uri: $templateUri")
-      log.info("")
+      logDetails(environment, authCredentials, region, name, Some(config))
+      log.info(s"")
 
-      val taskResult = CloudFormationClient(authCredentials, region).create(
-          name         = name,
-          capabilities = capabilities,
-          templateUri  = templateUri,
-          tags         = tags,
-          parameters   = parameters
-        )
-      taskResult match {
+      Try{
+        val request = create(name, config).flatMap( _ => await(name) )
+        request.foldMap(interpreter(region, authCredentials))
+      } match {
         case Success(_) =>
-        case Failure(ex) => fail(ex.getMessage)
+        case Failure(ex) =>
+          log.error("")
+          log.error(s" ERROR: Fail during 'stackCreate' - ${ex.getMessage}")
+          log.error("")
+          fail()
       }
     },
     stackDelete   := {
@@ -169,13 +160,13 @@ object PipelinePlugin extends AutoPlugin{
       log.info(s"")
       log.info(s"Deleting Stack:")
       log.info(s"")
-      log.info(s"\t Environment: $environment")
-      log.info(s"\t Credentials: ${authCredentials.getClass.getSimpleName}")
-      log.info(s"\t      Region: $region")
-      log.info(s"\t        Name: $name")
+      logDetails(environment, authCredentials, region, name, None)
       log.info("")
 
-      CloudFormationClient(authCredentials, region).delete(name)
+      Try{
+        val request = delete(name).flatMap(_ => await(name))
+        request.foldMap(interpreter(region, authCredentials))
+      }
     },
     stackUpdate   := {
       implicit val environment = (stackEnv          in stackUpdate).value
@@ -196,31 +187,25 @@ object PipelinePlugin extends AutoPlugin{
         .map      ( x => uri(s"${x.toString}/template.json"))
         .getOrElse( s3Uri )
       // Compute the Parameters
-      val parameters       = doReadParameters(parametersPath) ++ parametersCustom
+      val parameters  = doReadParameters(parametersPath) ++ parametersCustom
+      val config      = StackConfig(capabilities, templateUri, tags, parameters)
 
       log.info(s"")
       log.info(s"Updating Stack:")
       log.info(s"")
-      log.info(s"\t Environment: $environment")
-      log.info(s"\t Credentials: ${authCredentials.getClass.getSimpleName}")
-      log.info(s"\t      Region: $region")
-      log.info(s"\t        Name: $name")
-      log.info(s"\tCapabilities: $capabilities")
-      log.info(s"\t        Tags: $tags")
-      log.info(s"\t  Parameters: $parameters")
-      log.info(s"\tTemplate Uri: $templateUri")
-      log.info("")
+      logDetails(environment, authCredentials, region, name, Some(config))
+      log.info(s"")
 
-      val taskResult = CloudFormationClient(authCredentials, region).create(
-        name         = name,
-        capabilities = capabilities,
-        templateUri  = templateUri,
-        tags         = tags,
-        parameters   = parameters
-      )
-      taskResult match {
+      Try{
+        val request = dls.update(name, config).flatMap( _ => await(name) )
+        request.foldMap(interpreter(region, authCredentials))
+      } match {
         case Success(_) =>
-        case Failure(ex) => fail(ex.getMessage)
+        case Failure(ex) =>
+          log.error("")
+          log.error(s" ERROR: Fail during 'stackUpdate' - ${ex.getMessage}")
+          log.error("")
+          fail( ex )
       }
     },
 
@@ -244,20 +229,48 @@ object PipelinePlugin extends AutoPlugin{
       log.info(s"\tTemplatePath: $templatePath")
       log.info(s"\t      S3 Uri: $s3Uri")
       log.info("")
-      S3Client(authCredentials, region).publish(s3Uri, templatePath) match {
-        case Success(_)  => s3Uri
+
+      Try{
+        val request = pushTemplate(s3Uri, templatePath)
+        request.foldMap(interpreter(region, authCredentials))
+      } match {
+        case Success(_) =>
+          s3Uri
         case Failure(ex) =>
-          log.error(s"Failed to Publish Stack Templates: ${ex.getMessage}")
+          log.error("")
+          log.error(s" ERROR: Fail during 'stackPublish' - ${ex.getMessage}")
+          log.error("")
           fail()
       }
     }
   )
 
-  override lazy val projectSettings =
+  override lazy val projectSettings: Seq[Setting[_]] =
     inConfig(autoImport.DeployStatic )(basePipelineTasks ++ staticDeploySettings ) ++
     inConfig(autoImport.DeployProd   )(basePipelineTasks ++ prodDeploySettings   ) ++
     inConfig(autoImport.DeployPreProd)(basePipelineTasks ++ preprodDeploySettings) ++
     inConfig(autoImport.DeployDev    )(basePipelineTasks ++ devDeploySettings    ) ++
     (basePipelineTasks ++ devDeploySettings)
 
+  private def logDetails(
+    environment:String,
+    authCredentials:AuthCredentials,
+    region:StackRegion,
+    name:StackName,
+    configOpt:Option[StackConfig] = None
+  )(implicit log:Logger) = {
+    log.info(s"\t Environment: $environment")
+    log.info(s"\t Credentials: ${authCredentials.getClass.getSimpleName}")
+    log.info(s"\t      Region: $region")
+    log.info(s"\t        Name: $name")
+
+    configOpt match {
+      case Some(config) =>
+        log.info(s"\tCapabilities: ${config.capabilities}")
+        log.info(s"\t        Tags: ${config.tags}")
+        log.info(s"\t  Parameters: ${config.parameters}")
+        log.info(s"\tTemplate Uri: ${config.templateUri}")
+      case None =>
+    }
+  }
 }
