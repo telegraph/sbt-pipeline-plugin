@@ -29,7 +29,7 @@ package object pipeline {
     implicit val formats = DefaultFormats
 
     def processIfFolder:File => Option[File] = {
-      case folder if folder.isDirectory => folder.listFiles().find(_.getName.contains(environment))
+      case folder if folder.isDirectory => folder.listFiles().find(_.getName == s"parameters-$environment.json")
       case file => Some(file)
     }
     // SBT does not support JSON4S. We need to parse the file manually
