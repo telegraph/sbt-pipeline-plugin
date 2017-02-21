@@ -79,7 +79,13 @@ object PipelinePlugin extends AutoPlugin{
         val request = createOrUpdate(name, config).flatMap( _ => await(name) )
         request.foldMap(interpreter(region, authCredentials))
       } match {
-        case Success(_) =>
+        case Success(stackStatus) =>
+          if (stackStatus.exists(_.contains("ROLLBACK"))) {
+            log.error(s" ERROR: Stack Deployment failed")
+            fail(() => ())
+          } else {
+            log.info(" Stack Deployed Successfully")
+          }
         case Failure(ex) =>
           log.error("")
           log.error(s" ERROR: Fail during 'stackSetup' - ${ex.getMessage}")
@@ -142,12 +148,18 @@ object PipelinePlugin extends AutoPlugin{
         val request = create(name, config).flatMap( _ => await(name) )
         request.foldMap(interpreter(region, authCredentials))
       } match {
-        case Success(_) =>
+        case Success(stackStatus) =>
+          if (stackStatus.exists(_.contains("ROLLBACK"))) {
+            log.error(s" ERROR: Stack Deployment failed")
+            fail(() => ())
+          } else {
+            log.info(" Stack Deployed Successfully")
+          }
         case Failure(ex) =>
           log.error("")
           log.error(s" ERROR: Fail during 'stackCreate' - ${ex.getMessage}")
           log.error("")
-          fail()
+          fail(()=>())
       }
     },
     stackDelete   := {
@@ -200,7 +212,13 @@ object PipelinePlugin extends AutoPlugin{
         val request = dls.update(name, config).flatMap( _ => await(name) )
         request.foldMap(interpreter(region, authCredentials))
       } match {
-        case Success(_) =>
+        case Success(stackStatus) =>
+          if (stackStatus.exists(_.contains("ROLLBACK"))) {
+            log.error(s" ERROR: Stack Deployment failed")
+            fail(() => ())
+          } else {
+            log.info(" Stack Deployed Successfully")
+          }
         case Failure(ex) =>
           log.error("")
           log.error(s" ERROR: Fail during 'stackUpdate' - ${ex.getMessage}")
@@ -240,7 +258,7 @@ object PipelinePlugin extends AutoPlugin{
           log.error("")
           log.error(s" ERROR: Fail during 'stackPublish' - ${ex.getMessage}")
           log.error("")
-          fail()
+          fail(()=>())
       }
     }
   )
