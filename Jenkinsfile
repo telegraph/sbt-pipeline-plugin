@@ -28,16 +28,12 @@ node {
         ]
     }
     
-    checkpoint 'Completed Checkout'
-    
     stage("Build & Test"){
         sh """
             ${sbtFolder}/sbt clean test package
         """
     }
 
-    checkpoint 'Completed Build & Test'
-    
     stage("Publish"){
         echo "Run Publish"
         sh """
