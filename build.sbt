@@ -1,6 +1,8 @@
 
 import Dependencies._
 
+import scala.language.postfixOps
+
 lazy val buildNumber = sys.env.get("BUILD_NUMBER")
 lazy val CommonSettings = Seq(
   name              := "sbt-pipeline-plugin",
@@ -24,7 +26,7 @@ libraryDependencies ++= ProjectDependencies ++ UnitTestDependencies
 
 publishTo := {
   if( isSnapshot.value ){
-    Some("mvn-artifacts" at "s3://mvn-artifacts/snapshot")
+    Some("mvn-artifacts" at "s3://mvn-artifacts/snapshot") withIvyPatterns
   }else {
     Some("mvn-artifacts" at "s3://mvn-artifacts/release")
   }
