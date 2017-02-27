@@ -13,7 +13,12 @@ lazy val CommonSettings = Seq(
 )
 
 lazy val root = (project in file(".")).
-  settings(CommonSettings: _*)
+  settings(CommonSettings: _*).
+  settings(
+    concurrentRestrictions := Seq(
+      Tags.limit(Tags.Test, 1)
+    )
+  )
 
 libraryDependencies ++= ProjectDependencies ++ UnitTestDependencies
 
