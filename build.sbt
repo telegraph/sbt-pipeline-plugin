@@ -8,7 +8,8 @@ lazy val CommonSettings = Seq(
   version           := "1.1.0." + buildNumber.getOrElse("dev"),
   scalaVersion      := "2.10.6",
   isSnapshot        := buildNumber.isEmpty,
-  sbtPlugin         := true
+  sbtPlugin         := true,
+  publishMavenStyle := false
 )
 
 lazy val root = (project in file(".")).
