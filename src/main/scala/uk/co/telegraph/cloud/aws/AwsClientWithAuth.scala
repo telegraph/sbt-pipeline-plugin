@@ -4,11 +4,6 @@ import com.amazonaws.auth.AWSCredentialsProvider
 import sbt.Logger
 import uk.co.telegraph.cloud.AuthCredentials
 
-/**
-  * Created: rodriguesa 
-  * Date   : 17/02/2017
-  * Project: Default (Template) Project
-  */
 private [aws] trait AwsClientWithAuth {
 
   val authCredentials: AuthCredentials

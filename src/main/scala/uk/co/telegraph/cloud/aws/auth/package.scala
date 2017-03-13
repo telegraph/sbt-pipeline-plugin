@@ -4,11 +4,6 @@ import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.auth.{AWSCredentialsProvider, AWSStaticCredentialsProvider, BasicAWSCredentials, EnvironmentVariableCredentialsProvider}
 import uk.co.telegraph.cloud.{AuthCredentials, AuthEnvVars, AuthProfile, AuthToken}
 
-/**
- * Created: rodriguesa 
- * Date   : 03/02/2017
- * Project: sbt-pipeline-plugin
- */
 package object auth {
 
   implicit object AuthTokenProvider extends AuthProvider[AuthToken]{

@@ -1,0 +1,41 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "CloudFormation template to build the static stack",
+    "Parameters": {
+        "ApplicationName": {
+            "Description": "The application name",
+            "Type": "String"
+        },
+        "DeploymentEnv": {
+            "Description": "The Application Deployment Environment",
+            "Type": "String"
+        },
+        "DeployVersion": {
+            "Description": "The Application Deployment Environment",
+            "Type": "String"
+        }
+    },
+    "Resources": {
+        "myWaitHandle": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+                "LogGroupName": { "Fn::Sub":[ "${appName}-${version}", {
+                    "appName": {"Ref": "ApplicationName"},
+                    "version": {"Ref": "DeployVersion"}
+                }]},
+                "RetentionInDays": 7
+            }
+        }
+    },
+    "Outputs": {
+        "ApplicationName": {
+            "Value": {"Ref": "ApplicationName"}
+        },
+        "DeploymentEnv": {
+            "Value": {"Ref": "DeploymentEnv"}
+        },
+        "DeployVersion": {
+            "Value": {"Ref": "DeployVersion"}
+        }
+    }
+}

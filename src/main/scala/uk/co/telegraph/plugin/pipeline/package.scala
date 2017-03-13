@@ -7,11 +7,6 @@ import uk.co.telegraph.cloud.AuthCredentials
 
 import scala.language.implicitConversions
 
-/**
- * Created: rodriguesa 
- * Date   : 02/02/2017
- * Project: sbt-pipeline-plugin
- */
 package object pipeline {
 
   type StackParams      = Map[String, String]

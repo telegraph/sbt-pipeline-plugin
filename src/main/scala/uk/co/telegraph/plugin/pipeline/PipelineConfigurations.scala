@@ -2,6 +2,7 @@ package uk.co.telegraph.plugin.pipeline
 
 import sbt.Configuration
 import sbt.Configurations._
+
 trait PipelineConfigurations {
   lazy val DeployStatic: Configuration = config("static" ) extend Runtime
   lazy val DeployDev: Configuration = config("dev"    ) extend Runtime

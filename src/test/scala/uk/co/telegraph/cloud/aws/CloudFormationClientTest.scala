@@ -13,11 +13,6 @@ import uk.co.telegraph.plugin.pipeline.StackAuth
 
 import scala.util.{Failure, Success, Try}
 
-/**
- * Created: rodriguesa 
- * Date   : 04/02/2017
- * Project: sbt-pipeline-plugin
- */
 @RunWith(classOf[JUnitRunner])
 class CloudFormationClientTest extends FunSpec with Matchers with BeforeAndAfter {
 

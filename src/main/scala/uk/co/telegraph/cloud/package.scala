@@ -6,13 +6,6 @@ import com.amazonaws.services.cloudformation.model.Stack
 import sbt._
 import uk.co.telegraph.plugin.pipeline.{StackParams, StackTags}
 
-import scala.util.Try
-
-/**
-  * Created: rodriguesa 
-  * Date   : 17/02/2017
-  * Project: sbt-pipeline-plugin
-  */
 package object cloud {
 
   type StackName   = String
@@ -34,7 +27,7 @@ package object cloud {
   final case class Create      (name: StackName, config:StackConfig) extends CloudInstruction[Unit]
   final case class Update      (name: StackName, config:StackConfig) extends CloudInstruction[Unit]
 
-  final case class PushTemplate(storageUrl: URI, localPath:File) extends CloudInstruction[Try[Unit]]
+  final case class PushTemplate(storageUrl: URI, localPath:File) extends CloudInstruction[Unit]
 
   object dls {
     type CloudInst[A] = Free[CloudInstruction, A]
@@ -66,7 +59,7 @@ package object cloud {
       liftF(Await(name))
     }
 
-    def pushTemplate( storageUrl:URI, localPath:File ): CloudInst[Try[Unit]] = {
+    def pushTemplate( storageUrl:URI, localPath:File ): CloudInst[Unit] = {
       liftF( PushTemplate(storageUrl, localPath) )
     }
   }

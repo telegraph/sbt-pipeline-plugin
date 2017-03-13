@@ -1,0 +1,12 @@
+# check if the file gets created
+> prepare-create
+> static:stackSetup
+$ sleep 1000
+> check-stack-created
+> prepare-update
+> static:stackSetup
+$ sleep 1000
+> check-stack-updated
+> static:stackTeardown
+$ sleep 1000
+> check-stack-deleted

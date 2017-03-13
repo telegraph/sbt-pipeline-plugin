@@ -2,16 +2,14 @@ package uk.co.telegraph.cloud.aws
 
 import com.amazonaws.services.s3.transfer.{MultipleFileUpload, TransferManager, Upload}
 import org.junit.runner.RunWith
-import org.mockito.Mockito._
 import org.mockito.ArgumentMatchers.{anyBoolean, eq => mkEq}
+import org.mockito.Mockito._
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{BeforeAndAfter, FunSpec, Matchers}
 import sbt._
 import uk.co.telegraph.cloud.AuthProfile
 import uk.co.telegraph.cloud.aws.AwsS3Bucket.{S3InvalidLocalPath, S3InvalidProtocol}
 import uk.co.telegraph.plugin.pipeline.StackAuth
-
-import scala.util.{Failure, Success}
 
 @RunWith(classOf[JUnitRunner])
 class S3ClientTest extends FunSpec with Matchers with BeforeAndAfter {
@@ -25,13 +23,17 @@ class S3ClientTest extends FunSpec with Matchers with BeforeAndAfter {
   describe("Given the 'S3Client', "){
 
     it("should fail when using a wrong s3Path"){
-      val response = S3ClientMock.pushTemplate(SampleInvalidS3Uri, SampleDirectoryPath)
-      response shouldBe Failure(S3InvalidProtocol)
+      val response = intercept[Exception]{
+        S3ClientMock.pushTemplate(SampleInvalidS3Uri, SampleDirectoryPath)
+      }
+      response shouldBe S3InvalidProtocol
     }
 
     it("should fail when using an invalid LocalPath"){
-      val response = S3ClientMock.pushTemplate(SampleS3Uri, SampleInvalidFilePath)
-      response shouldBe Failure(S3InvalidLocalPath)
+      val response = intercept[Exception]{
+        S3ClientMock.pushTemplate(SampleS3Uri, SampleInvalidFilePath)
+      }
+      response shouldBe S3InvalidLocalPath
     }
 
     it("I should get an error if something goes wrong"){
@@ -44,8 +46,10 @@ class S3ClientTest extends FunSpec with Matchers with BeforeAndAfter {
           anyBoolean()
         )).thenThrow(SampleFailureResult)
 
-      val response = S3ClientMock.pushTemplate(SampleS3Uri, SampleDirectoryPath)
-      response shouldBe Failure(SampleFailureResult)
+      val response = intercept[RuntimeException]{
+        S3ClientMock.pushTemplate(SampleS3Uri, SampleDirectoryPath)
+      }
+      response shouldBe SampleFailureResult
     }
 
     it("I should be able to publish a directory"){
@@ -60,7 +64,7 @@ class S3ClientTest extends FunSpec with Matchers with BeforeAndAfter {
       .thenReturn(SampleSuccessResult)
 
       val response = S3ClientMock.pushTemplate(SampleS3Uri, SampleDirectoryPath)
-      response shouldBe Success()
+      response shouldBe ()
     }
 
 
@@ -75,7 +79,7 @@ class S3ClientTest extends FunSpec with Matchers with BeforeAndAfter {
       .thenReturn(SampleSuccessResult)
 
       val response = S3ClientMock.pushTemplate(SampleS3Uri, SampleFilePath)
-      response shouldBe Success()
+      response shouldBe ()
     }
   }
 }

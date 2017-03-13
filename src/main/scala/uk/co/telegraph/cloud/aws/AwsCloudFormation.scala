@@ -6,9 +6,8 @@ import com.amazonaws.services.cloudformation.AmazonCloudFormationClientBuilder
 import com.amazonaws.services.cloudformation.model._
 import sbt.{Logger, URI}
 import uk.co.telegraph.cloud.{AuthCredentials, StackConfig, StackName, StackStatus}
-
 import scala.collection.convert.WrapAsScala._
-import scala.language.implicitConversions
+import scala.language.{implicitConversions, postfixOps}
 import scala.util.Try
 
 private [aws] trait AwsCloudFormation { this: AwsClientWithAuth =>

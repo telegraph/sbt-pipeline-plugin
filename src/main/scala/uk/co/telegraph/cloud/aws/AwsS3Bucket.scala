@@ -1,17 +1,14 @@
 package uk.co.telegraph.cloud.aws
 
+import com.amazonaws.AmazonWebServiceRequest
+import com.amazonaws.event.{ProgressEvent, ProgressEventType, SyncProgressListener}
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
+import com.amazonaws.services.s3.model.ProgressEvent
 import com.amazonaws.services.s3.transfer.TransferManagerBuilder
+import com.amazonaws.services.s3.transfer.internal.TransferProgressUpdatingListener
 import sbt.{File, Logger, URI}
 import uk.co.telegraph.cloud.AuthCredentials
 
-import scala.util.{Failure, Try}
-
-/**
-  * Created: rodriguesa 
-  * Date   : 17/02/2017
-  * Project: Default (Template) Project
-  */
 private [aws] trait AwsS3Bucket { this: AwsClientWithAuth =>
 
   import AwsS3Bucket._
@@ -28,22 +25,22 @@ private [aws] trait AwsS3Bucket { this: AwsClientWithAuth =>
   /**
     * Pushes Templates to S3 Bucket
     */
-  def pushTemplate(storageUrl:URI, localPath:File):Try[Unit] = {
+  def pushTemplate(storageUrl:URI, localPath:File):Unit = {
     if( storageUrl.getScheme != "s3" ){
-      return Failure(S3InvalidProtocol)
+      throw S3InvalidProtocol
     }
     if( !localPath.exists() ){
-      return Failure(S3InvalidLocalPath)
+      throw S3InvalidLocalPath
     }
 
     val s3Bucket = storageUrl.getHost
     val s3Key    = storageUrl.getPath.replaceFirst("^/", "")
-    Try(localPath.isDirectory).map({
-      case true  =>
-        transferManager.uploadDirectory(s3Bucket, s3Key, localPath, true).waitForCompletion()
-      case false =>
-        transferManager.upload         (s3Bucket, s3Key, localPath      ).waitForCompletion()
-    })
+
+    if (localPath.isDirectory) {
+      transferManager.uploadDirectory(s3Bucket, s3Key, localPath, true).waitForCompletion()
+    } else {
+      transferManager.upload(s3Bucket, s3Key, localPath).waitForCompletion()
+    }
   }
 }
 

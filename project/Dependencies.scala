@@ -4,7 +4,7 @@ import sbt._
 object Dependencies {
 
   private lazy val json4sVersion  = "3.2.10"
-  private lazy val awsSdkVersion  = "1.11.86"
+  private lazy val awsSdkVersion  = "1.11.103"
 
   lazy val ProjectDependencies = Seq(
     "com.amazonaws" % "aws-java-sdk-cloudformation" % awsSdkVersion,
