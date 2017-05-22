@@ -3,7 +3,8 @@ lock("${env.PROJECT_NAME}"){
     node {
         def sbtFolder        = "${tool name: 'sbt-0.13.13', type: 'org.jvnet.hudson.plugins.SbtPluginBuilder$SbtInstallation'}/bin"
         def projectName      = "${env.PROJECT_NAME}"
-        def github_token     = "0598dad35d170d53f1d4bff07e009e1bdef35856"
+        def github_token     = "${env.GITHUB_TOKEN}"
+        def jenkins_github_id= "${env.JENKINS_GITHUB_CREDENTIALS_ID}"
         def pipeline_version = "1.1.0.${env.BUILD_NUMBER}"
         def github_commit    = ""
 
@@ -22,7 +23,7 @@ lock("${env.PROJECT_NAME}"){
                 ]],
                 submoduleCfg: [],
                 userRemoteConfigs: [[
-                    credentialsId: 'fe000f7c-4de6-45c7-9097-d1fba24f3cb5',
+                    credentialsId: "${jenkins_github_id}",
                     url: "git@github.com:telegraph/${projectName}.git"
                 ]]
             ]
