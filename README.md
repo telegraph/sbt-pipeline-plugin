@@ -1,6 +1,6 @@
 # SBT Pipeline Plugin
 
-[![MIT license](https://img.shields.io/badge/license-MIT%20License-blue.svg)](LICENSE) [![Build Status](https://jenkins-prod.api-platforms.telegraph.co.uk/job/Pipeline/job/sbt-pipeline-plugin/badge/icon)](https://jenkins-prod.api-platforms.telegraph.co.uk/job/Pipeline/job/sbt-pipeline-plugin/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![Build Status](https://jenkins-prod.api-platforms.telegraph.co.uk/job/Pipeline/job/sbt-pipeline-plugin/badge/icon)](https://jenkins-prod.api-platforms.telegraph.co.uk/job/Pipeline/job/sbt-pipeline-plugin/)
 
 This SBT plugin is part of CI/CD Pipeline project and it was created in order to have an uniform way to deploy,
 test and destroy the supporting infrastructure for our services. Therefore, the plugin must be:
