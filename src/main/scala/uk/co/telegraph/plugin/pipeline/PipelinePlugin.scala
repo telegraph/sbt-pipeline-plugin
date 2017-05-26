@@ -2,6 +2,7 @@ package uk.co.telegraph.plugin.pipeline
 
 import sbt.Project.inConfig
 import sbt._
+import uk.co.telegraph.cloud.AuthProfile
 
 object PipelinePlugin extends AutoPlugin{
 
@@ -11,14 +12,20 @@ object PipelinePlugin extends AutoPlugin{
 
 
   lazy val staticDeploySettings : Seq[Setting[_]] = baseStackSettings ++ Seq(
-    stackEnv := "static"
+    stackEnv := "static",
+    stackAuth := AuthProfile(Some("prod"))
   )
-  lazy val devDeploySettings    : Seq[Setting[_]] = baseStackSettings
+  lazy val devDeploySettings    : Seq[Setting[_]] = baseStackSettings ++ Seq(
+    stackEnv  := "dev",
+    stackAuth := AuthProfile(Some("dev"))
+  )
   lazy val preprodDeploySettings: Seq[Setting[_]] = baseStackSettings ++ Seq(
-    stackEnv := "preprod"
+    stackEnv  := "preprod",
+    stackAuth := AuthProfile(Some("preprod"))
   )
   lazy val prodDeploySettings   : Seq[Setting[_]] = baseStackSettings ++ Seq(
-    stackEnv := "prod"
+    stackEnv := "prod",
+    stackAuth := AuthProfile(Some("prod"))
   )
 
   override def trigger: PluginTrigger = allRequirements

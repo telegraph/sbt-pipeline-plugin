@@ -19,7 +19,7 @@ trait GenericTask {
     logger.info(s"$taskName Stack:")
     logger.info(s"")
     logger.info(s"\t Environment: $environment")
-    logger.info(s"\t Credentials: ${auth.getClass.getSimpleName}")
+    logger.info(s"\t Credentials: $auth")
     logger.info(s"\t      Region: $region")
     logger.info(s"\t        Name: $name")
 
