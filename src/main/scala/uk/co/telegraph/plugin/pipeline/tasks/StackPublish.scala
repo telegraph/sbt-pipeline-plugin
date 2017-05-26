@@ -39,7 +39,7 @@ trait StackPublish extends GenericTask {
     logger.info(s"$taskName Stack:")
     logger.info(s"")
     logger.info(s"\t Environment: $environment")
-    logger.info(s"\t Credentials: ${auth.getClass.getSimpleName}")
+    logger.info(s"\t Credentials: $auth")
     logger.info(s"\t      Region: $region")
     logger.info(s"\tTemplatePath: $tempPath")
     logger.info(s"\t      S3 Uri: $tempS3Uri")
