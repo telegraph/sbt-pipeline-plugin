@@ -81,7 +81,7 @@ describes the defaulf configurations available:
 This configuration sets the stack parameters for *Static Environment* which are:
  * **stackEnv** = *"static"*
  * **stackParamsPath** = *"${baseDirectory}/infrastructure/static/parameters"*
- * **stackTemplatePath** = *"${baseDirectory}/infrastructure/static/parameters"*
+ * **stackTemplatePath** = *"${baseDirectory}/infrastructure/static/templates"*
 
 Sbt Variable: *DeployStatic* 
 
@@ -92,7 +92,7 @@ Sbt Commandline: sbt static:*
 This configuration sets the stack parameters for *Dev Environment* which are:
  * **stackEnv** = *"dev"*
  * **stackParamsPath** = *"${baseDirectory}/infrastructure/dynamic/parameters"*
- * **stackTemplatePath** = *"${baseDirectory}/infrastructure/dynamic/parameters"*
+ * **stackTemplatePath** = *"${baseDirectory}/infrastructure/dynamic/templates"*
 
 Sbt Variable: *DeployDev* 
 
@@ -103,7 +103,7 @@ Sbt Commandline: sbt dev:*
 This configuration sets the stack parameters for *Preprod Environment* which are:
  * **stackEnv** = *"preprod"*
  * **stackParamsPath** = *"${baseDirectory}/infrastructure/dynamic/parameters"*
- * **stackTemplatePath** = *"${baseDirectory}/infrastructure/dynamic/parameters"*
+ * **stackTemplatePath** = *"${baseDirectory}/infrastructure/dynamic/templates"*
 
 Sbt Variable: *DeployPreProd* 
 
@@ -114,7 +114,7 @@ Sbt Commandline: sbt preprod:*
 This configuration sets the stack parameters for *Prod Environment* which are:
  * **stackEnv** = *"prod"*
  * **stackParamsPath** = *"${baseDirectory}/infrastructure/dynamic/parameters"*
- * **stackTemplatePath** = *"${baseDirectory}/infrastructure/dynamic/parameters"*
+ * **stackTemplatePath** = *"${baseDirectory}/infrastructure/dynamic/templates"*
 
 Sbt Variable: *DeployProd* 
 
