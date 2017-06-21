@@ -6,10 +6,15 @@ import uk.co.telegraph.cloud.AuthProfile
 
 object PipelinePlugin extends AutoPlugin{
 
-  object autoImport extends PipelineKeys with PipelineConfigurations
+  object autoImport extends PipelineKeys with PipelineConfigurations {
+    lazy val pipelineSettings = baseStackSettings ++
+      inConfig(autoImport.DeployStatic )(staticDeploySettings ) ++
+      inConfig(autoImport.DeployProd   )(prodDeploySettings   ) ++
+      inConfig(autoImport.DeployPreProd)(preprodDeploySettings) ++
+      inConfig(autoImport.DeployDev    )(devDeploySettings    )
+  }
 
   import autoImport._
-
 
   lazy val staticDeploySettings : Seq[Setting[_]] = baseStackSettings ++ Seq(
     stackEnv := "static",
@@ -30,10 +35,5 @@ object PipelinePlugin extends AutoPlugin{
 
   override def trigger: PluginTrigger = allRequirements
 
-  override lazy val projectSettings: Seq[Setting[_]] =
-    inConfig(autoImport.DeployStatic )(staticDeploySettings ) ++
-    inConfig(autoImport.DeployProd   )(prodDeploySettings   ) ++
-    inConfig(autoImport.DeployPreProd)(preprodDeploySettings) ++
-    inConfig(autoImport.DeployDev    )(devDeploySettings    ) ++
-    devDeploySettings
+  override lazy val projectSettings = pipelineSettings
 }

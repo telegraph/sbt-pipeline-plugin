@@ -1,4 +1,5 @@
 
+ansiColor('xterm') {
 lock("${env.PROJECT_NAME}"){
     node {
         def sbtFolder        = "${tool name: 'sbt-0.13.13', type: 'org.jvnet.hudson.plugins.SbtPluginBuilder$SbtInstallation'}/bin"
@@ -58,4 +59,5 @@ lock("${env.PROJECT_NAME}"){
             """
         }
     }
+}
 }
