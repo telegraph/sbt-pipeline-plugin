@@ -1,39 +1,35 @@
 package uk.co.telegraph.plugin.pipeline
 
-import sbt.Project.inConfig
+import sbt.Keys._
 import sbt._
 import uk.co.telegraph.cloud.AuthProfile
+import uk.co.telegraph.plugin.pipeline.tasks._
 
 object PipelinePlugin extends AutoPlugin{
 
   object autoImport extends PipelineKeys with PipelineConfigurations {
-    lazy val pipelineSettings = baseStackSettings ++
-      inConfig(autoImport.DeployStatic )(staticDeploySettings ) ++
-      inConfig(autoImport.DeployProd   )(prodDeploySettings   ) ++
-      inConfig(autoImport.DeployPreProd)(preprodDeploySettings) ++
-      inConfig(autoImport.DeployDev    )(devDeploySettings    )
+    lazy val pipelineSettings: Seq[Setting[_]] =
+      inConfig(DeployStatic)(baseStackSettings ++ Seq(
+        stackEnv  := "static",
+        stackAuth := AuthProfile(Some("prod"))
+      )) ++
+      inConfig(DeployDev)(baseStackSettings ++ Seq(
+        stackEnv  := "dev",
+        stackAuth := AuthProfile(Some("dev"))
+      )) ++
+      inConfig(DeployPreProd)(baseStackSettings ++ Seq(
+        stackEnv  := "preprod",
+        stackAuth := AuthProfile(Some("preprod"))
+      )) ++
+      inConfig(DeployProd)(baseStackSettings ++ Seq(
+        stackEnv  := "prod",
+        stackAuth := AuthProfile(Some("prod"))
+      ))
   }
 
   import autoImport._
 
-  lazy val staticDeploySettings : Seq[Setting[_]] = baseStackSettings ++ Seq(
-    stackEnv := "static",
-    stackAuth := AuthProfile(Some("prod"))
-  )
-  lazy val devDeploySettings    : Seq[Setting[_]] = baseStackSettings ++ Seq(
-    stackEnv  := "dev",
-    stackAuth := AuthProfile(Some("dev"))
-  )
-  lazy val preprodDeploySettings: Seq[Setting[_]] = baseStackSettings ++ Seq(
-    stackEnv  := "preprod",
-    stackAuth := AuthProfile(Some("preprod"))
-  )
-  lazy val prodDeploySettings   : Seq[Setting[_]] = baseStackSettings ++ Seq(
-    stackEnv := "prod",
-    stackAuth := AuthProfile(Some("prod"))
-  )
-
   override def trigger: PluginTrigger = allRequirements
 
-  override lazy val projectSettings = pipelineSettings
+  override lazy val projectSettings:Seq[Setting[_]] = pipelineSettings
 }

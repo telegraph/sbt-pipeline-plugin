@@ -1,8 +1,8 @@
 package uk.co.telegraph.plugin.pipeline
 
 import com.amazonaws.services.cloudformation.model.Stack
-import sbt.Keys._
 import sbt._
+import sbt.Keys._
 import uk.co.telegraph.cloud.AuthProfile
 import uk.co.telegraph.plugin.pipeline.tasks._
 
@@ -114,5 +114,3 @@ trait PipelineKeys {
     )
   )
 }
-
-object PipelineKeys extends PipelineKeys

@@ -2,7 +2,7 @@
 ansiColor('xterm') {
 lock("${env.PROJECT_NAME}"){
     node {
-        def sbtFolder        = "${tool name: 'sbt-0.13.13', type: 'org.jvnet.hudson.plugins.SbtPluginBuilder$SbtInstallation'}/bin"
+        def sbtFolder        = "${tool name: 'sbt', type: 'org.jvnet.hudson.plugins.SbtPluginBuilder$SbtInstallation'}/bin"
         def projectName      = "${env.PROJECT_NAME}"
         def github_token     = "${env.GITHUB_TOKEN}"
         def jenkins_github_id= "${env.JENKINS_GITHUB_CREDENTIALS_ID}"

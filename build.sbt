@@ -10,7 +10,6 @@ lazy val CommonSettings = Seq(
   isSnapshot        := buildNumber.isEmpty,
   logBuffered       := false,
   sbtPlugin         := true,
-  publishMavenStyle := false,
   scalacOptions     ++= Seq("-feature")
 )
 
