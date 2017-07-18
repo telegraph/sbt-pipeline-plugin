@@ -18,6 +18,7 @@ package object cloud {
   case class AuthProfile(profileName:Option[String]=None) extends AuthCredentials {
     override def toString: StackStatus = s"AuthProfile(${profileName.getOrElse("-default-")})"
   }
+
   case class AuthEnvVars() extends AuthCredentials
 
   case class StackConfig(capabilities:Seq[String], templateUri:URI, tags:StackTags, parameters:StackParams)

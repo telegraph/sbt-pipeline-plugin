@@ -34,7 +34,8 @@ class StackUpdateTest extends FunSpec with BeforeAndAfter with Matchers{
         SampleStackTags,
         SampleParamPath,
         SampleParamCustom,
-        SampleTemplateS3Uri
+        SampleTemplateS3Uri,
+        SampleTemplateFormat
       )(SampleEnvironment, SampleLogger)
 
       res shouldBe ()
@@ -58,7 +59,8 @@ class StackUpdateTest extends FunSpec with BeforeAndAfter with Matchers{
           SampleStackTags,
           SampleParamPath,
           SampleParamCustom,
-          SampleTemplateS3Uri
+          SampleTemplateS3Uri,
+          SampleTemplateFormat
         )(SampleEnvironment, SampleLogger)
       }
 
@@ -81,7 +83,8 @@ class StackUpdateTest extends FunSpec with BeforeAndAfter with Matchers{
           SampleStackTags,
           SampleParamPath,
           SampleParamCustom,
-          SampleTemplateS3Uri
+          SampleTemplateS3Uri,
+          SampleTemplateFormat
         )(SampleEnvironment, SampleLogger)
       }
 

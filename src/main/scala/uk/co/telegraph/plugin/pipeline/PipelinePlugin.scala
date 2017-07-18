@@ -1,9 +1,7 @@
 package uk.co.telegraph.plugin.pipeline
 
-import sbt.Keys._
 import sbt._
 import uk.co.telegraph.cloud.AuthProfile
-import uk.co.telegraph.plugin.pipeline.tasks._
 
 object PipelinePlugin extends AutoPlugin{
 
@@ -16,6 +14,10 @@ object PipelinePlugin extends AutoPlugin{
       inConfig(DeployDev)(baseStackSettings ++ Seq(
         stackEnv  := "dev",
         stackAuth := AuthProfile(Some("dev"))
+      )) ++
+      inConfig(DeployCt)(baseStackSettings ++ Seq(
+        stackEnv  := "ct",
+        stackAuth := AuthProfile(Some("preprod"))
       )) ++
       inConfig(DeployPreProd)(baseStackSettings ++ Seq(
         stackEnv  := "preprod",

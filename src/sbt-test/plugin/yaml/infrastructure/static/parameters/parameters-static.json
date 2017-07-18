@@ -1,7 +1,7 @@
 [
     {
         "ParameterKey"  : "ApplicationName",
-        "ParameterValue": "sbt-pipeline-plugin-tst"
+        "ParameterValue": "sbt-pipeline-plugin-tst-yaml"
     },
     {
         "ParameterKey"  : "DeploymentEnv",
@@ -9,6 +9,6 @@
     },
     {
         "ParameterKey"  : "DeployVersion",
-        "ParameterValue": "2"
+        "ParameterValue": "1"
     }
 ]

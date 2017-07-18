@@ -1,0 +1,14 @@
+[
+  {
+    "ParameterKey"  : "ApplicationName",
+    "ParameterValue": "sbt-pipeline-plugin-tst-yaml"
+  },
+  {
+    "ParameterKey"  : "DeploymentEnv",
+    "ParameterValue": "static"
+  },
+  {
+    "ParameterKey"  : "DeployVersion",
+    "ParameterValue": "1"
+  }
+]

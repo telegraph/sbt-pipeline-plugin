@@ -3,24 +3,25 @@ package uk.co.telegraph.plugin.pipeline
 import com.amazonaws.services.cloudformation.model.Stack
 import sbt._
 import sbt.Keys._
-import uk.co.telegraph.cloud.AuthProfile
+import uk.co.telegraph.cloud.{AuthProfile}
 import uk.co.telegraph.plugin.pipeline.tasks._
 
 trait PipelineKeys {
 
   //Stack Keys
-  lazy val stackEnv: SettingKey[String]               = SettingKey[String]     ("stack-env",            "Sets the infrastructure environment.")
-  lazy val stackParamsPath: SettingKey[File]          = SettingKey[File]       ("stack-path-params",    "Sets the infrastructure Static Path.")
-  lazy val stackTemplatePath: SettingKey[File]        = SettingKey[File]       ("stack-path-template",  "Sets the infrastructure Template Path.")
-  lazy val stackSkip: SettingKey[Boolean]             = SettingKey[Boolean    ]("stack-static-skip",    "Skips the infrastructure deployment.")
-  lazy val stackCustomParams: SettingKey[StackParams] = SettingKey[StackParams]("stack-params",         "Sets Custom Infrastructure Parameters")
-  lazy val stackTags: SettingKey[StackTags]           = SettingKey[StackTags  ]("stack-tags",           "Tags of this stack")
-  lazy val stackCapabilities: SettingKey[Seq[String]] = SettingKey[Seq[String]]("stack-capabilities",   "The list of capabilities that you want to allow in the stack . E.g.[CAPABILITY_IAM]")
-  lazy val stackRegion: SettingKey[String]            = SettingKey[String]     ("stack-region",         "The region where the stacks are deployed. E.g. eu-west-1 ")
-  lazy val stackName: SettingKey[String]              = SettingKey[String]     ("stack-name",           "stack name")
-  lazy val stackAuth: SettingKey[StackAuth]           = SettingKey[StackAuth]  ("stack-auth",           "Sets AWS Credentials to be executed.")
-  lazy val stackTemplateType: SettingKey[String]      = SettingKey[String]     ("stack-template-type",  "Sets the template type do be used for the stack S3Uri [static/dynamic]")
-  lazy val stackTemplateS3Uri: SettingKey[URI]        = SettingKey[URI]        ("stack-template-s3url", "Template S3 Url Location.")
+  lazy val stackEnv: SettingKey[String]                        = SettingKey[String]             ("stack-env",             "Sets the infrastructure environment.")
+  lazy val stackParamsPath: SettingKey[File]                   = SettingKey[File]               ("stack-path-params",     "Sets the infrastructure Static Path.")
+  lazy val stackTemplatePath: SettingKey[File]                 = SettingKey[File]               ("stack-path-template",   "Sets the infrastructure Template Path.")
+  lazy val stackSkip: SettingKey[Boolean]                      = SettingKey[Boolean    ]        ("stack-static-skip",     "Skips the infrastructure deployment.")
+  lazy val stackCustomParams: SettingKey[StackParams]          = SettingKey[StackParams]        ("stack-params",          "Sets Custom Infrastructure Parameters")
+  lazy val stackTags: SettingKey[StackTags]                    = SettingKey[StackTags  ]        ("stack-tags",            "Tags of this stack")
+  lazy val stackCapabilities: SettingKey[Seq[String]]          = SettingKey[Seq[String]]        ("stack-capabilities",    "The list of capabilities that you want to allow in the stack . E.g.[CAPABILITY_IAM]")
+  lazy val stackRegion: SettingKey[String]                     = SettingKey[String]             ("stack-region",          "The region where the stacks are deployed. E.g. eu-west-1 ")
+  lazy val stackName: SettingKey[String]                       = SettingKey[String]             ("stack-name",            "stack name")
+  lazy val stackAuth: SettingKey[StackAuth]                    = SettingKey[StackAuth]          ("stack-auth",            "Sets AWS Credentials to be executed.")
+  lazy val stackTemplateType: SettingKey[String]               = SettingKey[String]             ("stack-template-type",   "Sets the template type do be used for the stack S3Uri [static/dynamic]")
+  lazy val stackTemplateFormat:SettingKey[StackTemplateFormat] = SettingKey[StackTemplateFormat]("stack-template-format", "Sets the template format (yaml, yml, json)")
+  lazy val stackTemplateS3Uri: SettingKey[URI]                 = SettingKey[URI]                ("stack-template-s3url",  "Template S3 Url Location.")
 
   lazy val stackSetup   : TaskKey[Unit]           = TaskKey[Unit]          ("stackSetup",    "Task used to setup a stack")
   lazy val stackTest    : TaskKey[Unit]           = TaskKey[Unit]          ("stackTest",     "Task used ti test a stack")
@@ -36,6 +37,9 @@ trait PipelineKeys {
     stackName          := s"${name.value.replace("-service", "")}-${stackEnv.value}",
     stackParamsPath    := baseDirectory.value / "infrastructure" / stackTemplateType.value / "parameters",
     stackTemplatePath  := baseDirectory.value / "infrastructure" / stackTemplateType.value / "templates",
+    stackTemplateFormat:= {
+      doGetTemplateFormat(stackTemplatePath.value)
+    },
     stackSkip          := false,
     stackCustomParams  := Map.empty,
     stackTags          := Map("Billing" -> "Platforms"),
@@ -77,7 +81,8 @@ trait PipelineKeys {
       tags          = stackTags.value,
       paramsPath    = stackParamsPath.value,
       paramsCustom  = stackCustomParams.value,
-      templateS3Uri = stackTemplateS3Uri.value
+      templateS3Uri = stackTemplateS3Uri.value,
+      templateFormat= stackTemplateFormat.value
     )(
       environment = stackEnv.value,
       logger      = streams.value.log
@@ -90,7 +95,8 @@ trait PipelineKeys {
       tags          = stackTags.value,
       paramsPath    = stackParamsPath.value,
       paramsCustom  = stackCustomParams.value,
-      templateS3Uri = stackTemplateS3Uri.value
+      templateS3Uri = stackTemplateS3Uri.value,
+      templateFormat= stackTemplateFormat.value
     )(
       environment = stackEnv.value,
       logger      = streams.value.log

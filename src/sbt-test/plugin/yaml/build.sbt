@@ -10,6 +10,7 @@ lazy val testFullRun = (project in file(".")).
   configs (IntegrationTest).
   settings(Defaults.itSettings: _*).
   settings(
+    name            := "sbt-pipeline-yaml",
     version         := "01",
     scalaVersion    := "2.10.6",
     prepareCreate :={

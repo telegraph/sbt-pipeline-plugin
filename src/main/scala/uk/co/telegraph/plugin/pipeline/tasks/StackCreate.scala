@@ -2,8 +2,8 @@ package uk.co.telegraph.plugin.pipeline.tasks
 
 import sbt.{File, Logger, URI, uri}
 import uk.co.telegraph.cloud.dls.{await, create}
-import uk.co.telegraph.cloud.{StackConfig, StackName, StackRegion}
-import uk.co.telegraph.plugin.pipeline.{StackAuth, StackParams, StackTags, doReadParameters}
+import uk.co.telegraph.cloud.{JsonFormat, StackConfig, StackName, StackRegion}
+import uk.co.telegraph.plugin.pipeline._
 
 import scala.util.{Failure, Success, Try}
 
@@ -19,9 +19,10 @@ trait StackCreate extends GenericTask{
     tags:StackTags,
     paramsPath:File,
     paramsCustom:StackParams,
-    templateS3Uri:URI
+    templateS3Uri:URI,
+    templateFormat:StackTemplateFormat
   )(implicit environment:String, logger:Logger):Unit = {
-    val templateUri = uri(s"${templateS3Uri.toString}/template.json")
+    val templateUri = uri(s"${templateS3Uri.toString}/template.${templateFormat.format}")
     // Compute the Parameters
     val parameters  = doReadParameters(paramsPath) ++ paramsCustom
     val config      = StackConfig(capabilities, templateUri, tags, parameters)
