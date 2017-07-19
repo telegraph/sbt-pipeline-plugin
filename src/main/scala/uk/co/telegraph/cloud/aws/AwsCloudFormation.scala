@@ -2,19 +2,19 @@ package uk.co.telegraph.cloud.aws
 
 import java.lang.Thread.sleep
 
-import com.amazonaws.services.cloudformation.AmazonCloudFormationClientBuilder
+import com.amazonaws.services.cloudformation.{AmazonCloudFormation, AmazonCloudFormationClientBuilder}
 import com.amazonaws.services.cloudformation.model._
 import sbt.{Logger, URI}
 import uk.co.telegraph.cloud.{AuthCredentials, StackConfig, StackName, StackStatus}
+
 import scala.collection.convert.WrapAsScala._
 import scala.language.{implicitConversions, postfixOps}
 import scala.util.Try
+import AwsCloudFormation._
 
 private [aws] trait AwsCloudFormation { this: AwsClientWithAuth =>
 
-  import AwsCloudFormation._
-
-  lazy val cfClient = AmazonCloudFormationClientBuilder.standard()
+  lazy val cfClient: AmazonCloudFormation = AmazonCloudFormationClientBuilder.standard()
     .withRegion     ( region )
     .withCredentials( authProvider )
     .build()
@@ -26,7 +26,7 @@ private [aws] trait AwsCloudFormation { this: AwsClientWithAuth =>
     val request = new DescribeStacksRequest()
       .withStackName(name)
 
-    Try{ cfClient.describeStacks(request) }.toOption map { _.getStacks.head }
+    Try{ cfClient.describeStacks(request).getStacks }.toOption.flatMap( _.headOption )
   }
 
   /**

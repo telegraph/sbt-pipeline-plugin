@@ -1,24 +1,21 @@
 package uk.co.telegraph.cloud.aws
 
-import com.amazonaws.AmazonWebServiceRequest
-import com.amazonaws.event.{ProgressEvent, ProgressEventType, SyncProgressListener}
-import com.amazonaws.services.s3.AmazonS3ClientBuilder
-import com.amazonaws.services.s3.model.ProgressEvent
-import com.amazonaws.services.s3.transfer.TransferManagerBuilder
-import com.amazonaws.services.s3.transfer.internal.TransferProgressUpdatingListener
+import com.amazonaws.services.s3.transfer.{TransferManager, TransferManagerBuilder}
+import com.amazonaws.services.s3.{AmazonS3, AmazonS3ClientBuilder}
 import sbt.{File, Logger, URI}
 import uk.co.telegraph.cloud.AuthCredentials
 
+import AwsS3Bucket._
+
 private [aws] trait AwsS3Bucket { this: AwsClientWithAuth =>
 
-  import AwsS3Bucket._
 
-  lazy val s3Client = AmazonS3ClientBuilder.standard()
+  lazy val s3Client: AmazonS3 = AmazonS3ClientBuilder.standard()
     .withRegion     ( region )
     .withCredentials( authProvider )
     .build()
 
-  lazy val transferManager = TransferManagerBuilder.standard()
+  lazy val transferManager: TransferManager = TransferManagerBuilder.standard()
     .withS3Client(s3Client)
     .build()
 

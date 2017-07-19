@@ -9,11 +9,10 @@ import org.scalatest.{BeforeAndAfter, FunSpec, Matchers}
 import sbt.Logger
 import uk.co.telegraph.cloud._
 import uk.co.telegraph.plugin.pipeline.StackAuth
+import StackDescribeTest._
 
 @RunWith(classOf[JUnitRunner])
 class StackDescribeTest extends FunSpec with BeforeAndAfter with Matchers{
-
-  import StackDescribeTest._
 
   val SampleInvalidStackName = "invalid-test-stack"
 

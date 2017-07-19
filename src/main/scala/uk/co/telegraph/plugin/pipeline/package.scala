@@ -7,6 +7,7 @@ import uk.co.telegraph.cloud._
 
 import scala.language.implicitConversions
 import scala.util.Try
+import pipeline.PipelineConfigurations
 
 package object pipeline {
 
@@ -14,8 +15,6 @@ package object pipeline {
   type StackTags           = Map[String, String]
   type StackAuth           = AuthCredentials
   type StackTemplateFormat = TemplateType
-
-  import pipeline.PipelineConfigurations
 
   val DeployStatic  = PipelineConfigurations.DeployStatic
   val DeployProd    = PipelineConfigurations.DeployProd
@@ -29,9 +28,9 @@ package object pipeline {
       (strSplit.dropRight(1).mkString("."),strSplit.last)
     }
 
-    Try{templatePath.listFiles()}.filter(_ != null ).toOption
+    Try{templatePath.listFiles()}.filter( Option(_).isDefined ).toOption
       .flatMap { listFiles => listFiles
-        .filter ( f => f != null && f.isFile && f.exists )
+        .filter ( f => Option(f).isDefined && f.isFile && f.exists )
         .map    ( splitNameAndExtension )
         .collectFirst({
           case ("template", "json") => JsonFormat

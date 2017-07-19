@@ -10,11 +10,10 @@ import sbt.Logger
 import sbt._
 import uk.co.telegraph.cloud._
 import uk.co.telegraph.plugin.pipeline.StackAuth
+import StackPublishTest._
 
 @RunWith(classOf[JUnitRunner])
 class StackPublishTest extends FunSpec with BeforeAndAfter with Matchers{
-
-  import StackPublishTest._
 
   before{
     Mockito.reset(MockInterpreter)

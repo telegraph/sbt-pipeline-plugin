@@ -9,11 +9,10 @@ import org.scalatest.{BeforeAndAfter, FunSpec, Matchers}
 import sbt.Logger
 import uk.co.telegraph.cloud._
 import uk.co.telegraph.plugin.pipeline.StackAuth
+import StackDeleteTest._
 
 @RunWith(classOf[JUnitRunner])
 class StackDeleteTest extends FunSpec with BeforeAndAfter with Matchers{
-
-  import StackDeleteTest._
 
   before{
     Mockito.reset(MockInterpreter)

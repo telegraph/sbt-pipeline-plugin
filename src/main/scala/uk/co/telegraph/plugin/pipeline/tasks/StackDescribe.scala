@@ -15,9 +15,8 @@ trait StackDescribe extends GenericTask{
   def apply(name:StackName,  region:StackRegion, auth:StackAuth)(implicit environment:String, logger:Logger):Option[Stack] = {
     logDetails(name, region, auth)
     Try{
-      describe(name)
-        .foldMap(interpreter(region, auth))
-    } get
+      describe(name).foldMap(interpreter(region, auth))
+    } getOrElse None
   }
 }
 
