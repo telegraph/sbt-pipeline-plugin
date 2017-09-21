@@ -19,6 +19,7 @@ package object pipeline {
   val DeployStatic  = PipelineConfigurations.DeployStatic
   val DeployProd    = PipelineConfigurations.DeployProd
   val DeployPreProd = PipelineConfigurations.DeployPreProd
+  val DeployQa      = PipelineConfigurations.DeployQa
   val DeployCt      = PipelineConfigurations.DeployCt
   val DeployDev     = PipelineConfigurations.DeployDev
 

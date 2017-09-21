@@ -23,6 +23,10 @@ object PipelinePlugin extends AutoPlugin{
         stackEnv  := "preprod",
         stackAuth := AuthProfile(Some("preprod"))
       )) ++
+      inConfig(DeployQa)(baseStackSettings ++ Seq(
+        stackEnv  := "qa",
+        stackAuth := AuthProfile(Some("preprod"))
+      )) ++
       inConfig(DeployProd)(baseStackSettings ++ Seq(
         stackEnv  := "prod",
         stackAuth := AuthProfile(Some("prod"))
