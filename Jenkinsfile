@@ -30,9 +30,14 @@ lock("${env.PROJECT_NAME}"){
             ]
         }
 
-        stage("Build & Test"){
+
+        stage("Build, Test & Coverage"){
             sh """
-                ${sbtFolder}/sbt clean test package scripted
+                export CODACY_PROJECT_TOKEN=73269edecb6a41e69d23c39725f9beaa
+                ${sbtFolder}/sbt clean coverage test package scripted
+                ${sbtFolder}/sbt coverageReport
+                ${sbtFolder}/sbt coverageAggregate
+                ${sbtFolder}/sbt codacyCoverage
             """
         }
 

@@ -1,6 +1,8 @@
 
 import Dependencies._
 
+coverageHighlighting := false
+
 lazy val buildNumber = sys.env.get("BUILD_NUMBER").map(bn => s"b$bn")
 lazy val CommonSettings = Seq(
   name              := "sbt-pipeline-plugin",
