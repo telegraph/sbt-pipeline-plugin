@@ -3,7 +3,7 @@ import sbt._
 
 object Dependencies {
 
-  private lazy val json4sVersion  = "3.2.10"
+  private lazy val json4sVersion  = "3.5.4"
   private lazy val awsSdkVersion  = "1.11.103"
 
   lazy val ProjectDependencies = Seq(
