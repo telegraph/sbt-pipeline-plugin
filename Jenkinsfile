@@ -32,7 +32,8 @@ lock("${env.PROJECT_NAME}"){
 
 
         stage("Build, Test & Coverage"){
-            sh """
+            bash """
+                #!/bin/bash
                 export CODACY_PROJECT_TOKEN=73269edecb6a41e69d23c39725f9beaa
                 export CODECOV_TOKEN="42c5eaac-318e-4da5-b151-94af9233f95a"
                 ${sbtFolder}/sbt clean coverage test
