@@ -41,7 +41,9 @@ lock("${env.PROJECT_NAME}"){
                 ${sbtFolder}/sbt coverageAggregate
                 ${sbtFolder}/sbt codacyCoverage
                 ${sbtFolder}/sbt package scripted
-                bash <(curl -s https://codecov.io/bash)
+                curl -s https://codecov.io/bash > codecov.sh
+                chmod +x codecov.sh
+                ./codecov.sh
             """
         }
 
