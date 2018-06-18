@@ -1,6 +1,8 @@
 # SBT Pipeline Plugin
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![Build Status](https://jenkins-prod.api-platforms.telegraph.co.uk/job/Pipeline/job/sbt-pipeline-plugin/badge/icon)](https://jenkins-prod.api-platforms.telegraph.co.uk/job/Pipeline/job/sbt-pipeline-plugin/)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/53854f7a89b847cba05502c382573abe)](https://www.codacy.com/app/telegraph/sbt-pipeline-plugin?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=telegraph/sbt-pipeline-plugin&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/53854f7a89b847cba05502c382573abe)](https://www.codacy.com/app/telegraph/sbt-pipeline-plugin?utm_source=github.com&utm_medium=referral&utm_content=telegraph/sbt-pipeline-plugin&utm_campaign=Badge_Coverage)
 
 This SBT plugin is part of CI/CD Pipeline project and it was created in order to have an uniform way to deploy,
 test and destroy the supporting infrastructure for our services. Therefore, the plugin must be:
