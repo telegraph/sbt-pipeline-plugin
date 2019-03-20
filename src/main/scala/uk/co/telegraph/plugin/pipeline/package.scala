@@ -22,6 +22,8 @@ package object pipeline {
   val DeployQa      = PipelineConfigurations.DeployQa
   val DeployCt      = PipelineConfigurations.DeployCt
   val DeployDev     = PipelineConfigurations.DeployDev
+  val DeployTraining_aem     = PipelineConfigurations.DeployTraining_aem
+  val DeployQa_aem     = PipelineConfigurations.DeployQa_aem
 
   private [pipeline] def doGetTemplateFormat(templatePath:File):StackTemplateFormat = {
     def splitNameAndExtension: File => (String, String) = f => {
