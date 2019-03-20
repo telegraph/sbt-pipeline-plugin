@@ -10,8 +10,8 @@ trait PipelineConfigurations {
   lazy val DeployQa     : Configuration = config("qa"     ) extend Runtime
   lazy val DeployPreProd: Configuration = config("preprod") extend Runtime
   lazy val DeployProd   : Configuration = config("prod"   ) extend Runtime
-  lazy val DeployTraining_aem   : Configuration = config("training_aem"   ) extend Runtime
-  lazy val DeployQa_aem   : Configuration = config("qa_aem"   ) extend Runtime  
+  lazy val DeployTraining_aem   : Configuration = config("training-aem"   ) extend Runtime
+  lazy val DeployQa_aem   : Configuration = config("qa-aem"   ) extend Runtime  
 }
 
 object PipelineConfigurations extends PipelineConfigurations
