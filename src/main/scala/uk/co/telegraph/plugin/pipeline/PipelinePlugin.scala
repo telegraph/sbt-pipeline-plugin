@@ -33,11 +33,11 @@ object PipelinePlugin extends AutoPlugin{
       ))
       inConfig(DeployTraining_aem)(baseStackSettings ++ Seq(
         stackEnv  := "training-aem",
-        stackAuth := AuthProfile(Some("training-aem"))
+        stackAuth := AuthProfile(Some("preprod"))
       ))
       inConfig(DeployQa_aem)(baseStackSettings ++ Seq(
         stackEnv  := "qa-aem",
-        stackAuth := AuthProfile(Some("qa-aem"))
+        stackAuth := AuthProfile(Some("preprod"))
       ))
   }
 
