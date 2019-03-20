@@ -31,6 +31,14 @@ object PipelinePlugin extends AutoPlugin{
         stackEnv  := "prod",
         stackAuth := AuthProfile(Some("prod"))
       ))
+      inConfig(DeployTraining_aem)(baseStackSettings ++ Seq(
+        stackEnv  := "training-aem",
+        stackAuth := AuthProfile(Some("training-aem"))
+      ))
+      inConfig(DeployQa_aem)(baseStackSettings ++ Seq(
+        stackEnv  := "qa-aem",
+        stackAuth := AuthProfile(Some("qa-aem"))
+      ))
   }
 
   import autoImport._
